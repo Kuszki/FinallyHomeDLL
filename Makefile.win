@@ -1,0 +1,36 @@
+# Project: FinallyHome DLL
+# Makefile created by Dev-C++ 5.8.0
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = obj/dllmain.o obj/rs232.o obj/callbacks.o
+LINKOBJ  = obj/dllmain.o obj/rs232.o obj/callbacks.o
+LIBS     = -L"D:/Inne/dev2/MinGW64/lib32" -L"D:/Inne/dev2/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -mwindows -m32
+INCS     = -I"D:/Inne/dev2/MinGW64/include" -I"D:/Inne/dev2/MinGW64/x86_64-w64-mingw32/include" -I"D:/Inne/dev2/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include"
+CXXINCS  = -I"D:/Inne/dev2/MinGW64/include" -I"D:/Inne/dev2/MinGW64/x86_64-w64-mingw32/include" -I"D:/Inne/dev2/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"D:/Inne/dev2/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++"
+BIN      = bin/rs_lib.dll
+CXXFLAGS = $(CXXINCS) -Ofast -m32 -std=gnu99 -DBUILDING_DLL=1
+CFLAGS   = $(INCS) -Ofast -m32 -std=gnu99 -DBUILDING_DLL=1
+RM       = rm.exe -f
+DEF      = bin/librs_lib.def
+STATIC   = bin/librs_lib.a
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN) $(DEF) $(STATIC)
+
+$(BIN): $(LINKOBJ)
+	$(CC) -shared $(LINKOBJ) -o $(BIN) $(LIBS) -Wl,--output-def,$(DEF),--out-implib,$(STATIC),--add-stdcall-alias
+
+obj/dllmain.o: src/dllmain.c
+	$(CC) -c src/dllmain.c -o obj/dllmain.o $(CFLAGS)
+
+obj/rs232.o: src/rs232.c
+	$(CC) -c src/rs232.c -o obj/rs232.o $(CFLAGS)
+
+obj/callbacks.o: src/callbacks.c
+	$(CC) -c src/callbacks.c -o obj/callbacks.o $(CFLAGS)
